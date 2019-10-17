@@ -1,0 +1,74 @@
+/**
+* 路径：resources/templates
+*/
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"/>
+    <title>第一个HTML页面</title>
+    <script type="text/javascript" src="../jquery-3.4.0.js" ></script>
+</head>
+<body onload='init()'>
+<img src="../images/sock1.jpg">
+<button id="ss1" >请求报表</button>
+<h1>Hello Spring Boot!!!</h1>
+<!--<p th:text="${hello}"></p>-->
+<script>
+    function init(){
+        // 初始化内容
+        alert($(this).html());
+        var obj = {
+            "page": 1,
+            "pageSize": 10,
+            "macName": "",
+            "styleName": "",
+            "beamName": "",
+            "startDate": "2019-07-15 03:31:45",
+            "endDate": "2019-07-16 03:32:44"
+        };
+
+        $.ajax({
+            url: 'http://localhost:8801/report/getReportList',
+            type: 'post',
+            contentType: 'application/json',
+            data: JSON.stringify(obj),
+            success: function (data) {
+                alert("1")
+            },
+            error: function () {
+                alert("错误")
+            }
+        })
+    }
+    // $(function () {
+    //
+    //     $('#ss1').click(function () {
+    //         alert($(this).html());
+    //         var obj = {
+    //             "page": 1,
+    //             "pageSize": 10,
+    //             "macName": "",
+    //             "styleName": "",
+    //             "beamName": "",
+    //             "startDate": "2019-07-15 03:31:45",
+    //             "endDate": "2019-07-16 03:32:44"
+    //         };
+    //
+    //         $.ajax({
+    //             url: 'http://localhost:8801/report/getReportList',
+    //             type: 'post',
+    //             contentType: 'application/json',
+    //             data: JSON.stringify(obj),
+    //             success: function (data) {
+    //                 alert("1")
+    //             },
+    //             error: function () {
+    //                 alert("错误")
+    //             }
+    //         })
+    //     })
+    // });
+
+</script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+
+server:
+  # 测试版 端口号
+  port: 8230
+spring:
+  application:
+    name: LBackPlatform
+  datasource:
+    url:  jdbc:mysql://120.55.124.53:3306/tianheng?autoReconnect=true&allowMultiQueries=true&serverTimezone=Asia/Shanghai
+    username: cjy
+    password: cjy@2018
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+#    url: jdbc:mysql://localhost:3306/pro?autoReconnect=true&allowMultiQueries=true
+  transaction:
+    # spring事务
+    rollback-on-commit-failure: true
+  thymeleaf:
+   prefix: classpath:/templates/
+   mode: HTML
+   encoding: utf-8
+   cache: false
+
+mybatis:
+ mapper-locations:   classpath*:mapper/*Mapper.xml
+ type-aliases-package: com.liang.pro.entity
+ configuration:
+  log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  # 驼峰
+  map-underscore-to-camel-case: true
+
+    # 启用shutdown
+    # 公开所有的端点
+    # post 请求http://47.101.217.178:8801/killYou/shutdown springboot项目就会停止
+   # http://localhost:8801/killYou/shutdown springboot
+management:
+  endpoint:
+    shutdown:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: shutdown,info,health
+      base-path: /killYou
+# 打印自动配置报告
+# debug: true
+# 设置打印出来的日志的过滤级别
+logging:
+  level.com.liang.pro: trace
+  file: log/pro.log
+#  file: D:/pro.log
+
