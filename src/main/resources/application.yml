@@ -6,9 +6,9 @@ spring:
   application:
     name: LBackPlatform
   datasource:
-    url:  jdbc:mysql://120.55.124.53:3306/tianheng?autoReconnect=true&allowMultiQueries=true&serverTimezone=Asia/Shanghai
-    username: cjy
-    password: cjy@2018
+    url:  jdbc:mysql://localhost:3306/lplatform?autoReconnect=true&allowMultiQueries=true&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.zaxxer.hikari.HikariDataSource
 #    url: jdbc:mysql://localhost:3306/pro?autoReconnect=true&allowMultiQueries=true
