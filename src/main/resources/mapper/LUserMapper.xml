@@ -14,7 +14,8 @@
     <result column="modified_time" jdbcType="BIGINT" property="modifiedTime" />
   </resultMap>
     <select id="findUserByAccountId" resultMap="BaseResultMap">
-      select id,account_id,password,name,token,create_time,modified_time FROM l_user lu
+      select id,account_id,password,name,token,create_time,modified_time
+      FROM l_user lu
       where lu.account_id = #{accountId}
     </select>
 </mapper>

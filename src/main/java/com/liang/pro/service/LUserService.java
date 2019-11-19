@@ -8,7 +8,7 @@ import com.liang.pro.entity.LUser;
  * @date 2019/10/17 16:13
  */
 public interface LUserService {
-    void addUser(LUser lUser);
+    int addUser(LUser lUser);
 
     boolean checkUser(UserDto userDto);
 

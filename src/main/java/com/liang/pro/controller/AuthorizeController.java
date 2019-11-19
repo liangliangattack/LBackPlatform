@@ -1,5 +1,6 @@
 package com.liang.pro.controller;
 
+import com.google.common.collect.Lists;
 import com.liang.pro.annotation.UserLoginToken;
 import com.liang.pro.dto.UserDto;
 import com.liang.pro.entity.*;
@@ -23,7 +24,7 @@ import java.util.*;
  * @author 梁波 liangliangattack
  * @date 2019/9/17 8:36
  */
-@RestController
+@Controller
 @CrossOrigin(origins = "*")
 @RequestMapping("/author")
 public class AuthorizeController {
@@ -39,8 +40,8 @@ public class AuthorizeController {
 
     @UserLoginToken
     @GetMapping("/getMessage")
+    @ResponseBody
     public String getMessage(HttpServletResponse response){
-        response.setStatus(401);
         return "你已通过验证";
     }
 
@@ -50,6 +51,7 @@ public class AuthorizeController {
      * @return
      */
     @GetMapping("/error401")
+    @ResponseBody
     public String error401(HttpServletResponse response){
         response.setStatus(401);
         return "401 了解一下";
@@ -57,7 +59,11 @@ public class AuthorizeController {
 
     /**
      * github 三方登陆
-     * https://github.com/login/oauth/authorize?client_id=0e5beec3e6398c0c0ad6&scope=user
+     * 1.前端请求地址 https://github.com/login/oauth/authorize?client_id=0e5beec3e6398c0c0ad6
+     * 2.github上已经设置回调的地址为当前接口
+     * 3.通过回调回来的信息去获取 access_token
+     * 4.通过 access_token 去获取 user信息
+     * 5.重定向请求在后台发生，那github登录的token如何返回给前台知晓？
      * @param code
      * @return
      */
@@ -81,51 +87,48 @@ public class AuthorizeController {
             lUser.setAccountId(String.valueOf(githubUser.getId()));
             lUser.setCreateTime(System.currentTimeMillis());
 
-            lUserService.addUser(lUser);
+            //拿到用户之后 走登录或者注册流程
+            UserDto userDto = new UserDto();
+            userDto.setUserName(lUser.getAccountId());
+            LUser user = lUserService.login(userDto);//user是否存在
+            if(user != null){
 
-            response.addCookie(new Cookie("token",token));
-//            request.getSession().setAttribute("user",githubUser);
+            }else {
+                lUserService.addUser(lUser);
+            }
+
+            request.getSession().setAttribute("user",githubUser);
+//            response.addCookie(new Cookie("token",token));
             return "redirect:http://localhost:8080";
         }
         return "redirect:http://localhost:8080";
     }
 
     @RequestMapping(value = "/login")
-    public Map<String,Object> login(@RequestBody UserDto userDto){
-
-        Response2 rep = new Response2();
-        Map<String , Object> response = new HashMap<>();
-        //user是否存在
-        LUser user = lUserService.login(userDto);
+    @ResponseBody
+    public BaseResult login(@RequestBody UserDto userDto){
+        LUser user = lUserService.login(userDto);//user是否存在
         if(user != null){
-        //加密
-//        String password = DigestUtils.md5DigestAsHex(user.getPassword().getBytes());
-            String password = userDto.getPassword();
-
+            String password = DigestUtils.md5DigestAsHex(userDto.getPassword().getBytes());//md5
             if (password.equals(user.getPassword())) {
-                rep.setResult("ok");
-                rep.setState("200");
-                rep.setVersion("1");
-                rep.setMessage("登陆成功");
-                List<Object> list = new ArrayList<>();
-                list.add(user);
-                Map<String, Object> map = new HashMap<>();
-                map.put("user", list);
-                rep.setData(map);
-                rep.setNoPage(true);
-                //token -jwt 生成token
-                rep.setToken(tokenService.getToken(user));
-                rep.putAll(response);
-                return response;
+                return BaseResult.loginOk(user,tokenService.getToken(user));//token -jwt 生成token
             }
         }
-        rep.setResult("fail");
-        rep.setState("400");
-        rep.setVersion("1");
-        rep.setMessage("登陆失败");
-        rep.setData(null);
-        rep.setNoPage(true);
-        rep.putAll(response);
-        return response;
+        return BaseResult.notOk(Lists.newArrayList(new BaseResult.Error("login","登录失败")));
+    }
+
+    @RequestMapping(value = "/register")
+    @ResponseBody
+    public BaseResult register(@RequestBody UserDto userDto){
+        LUser checkUser = lUserService.login(userDto);//user是否存在
+        if(checkUser != null){
+            return BaseResult.notOk(Lists.newArrayList(new BaseResult.Error("register","注册失败,账户已存在")));
+        }
+        LUser user = new LUser(null,userDto.getUserName(),userDto.getPassword(),userDto.getUserName(),UUID.randomUUID().toString(),
+                System.currentTimeMillis(),null);
+        if(lUserService.addUser(user) == 1){
+            return BaseResult.ok(userDto.getUserName()+"->注册成功");
+        }
+        return BaseResult.notOk(Lists.newArrayList(new BaseResult.Error("register","注册失败")));
     }
 }

@@ -6,6 +6,7 @@ import com.liang.pro.mapper.LUserMapper;
 import com.liang.pro.service.LUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
 
 /**
  * @author 梁波 liangliangattack
@@ -18,8 +19,10 @@ public class LUserServiceImpl implements LUserService {
     private LUserMapper lUserMapper;
 
     @Override
-    public void addUser(LUser lUser) {
-        lUserMapper.insert(lUser);
+    public int addUser(LUser lUser) {
+        String password = DigestUtils.md5DigestAsHex("123456".getBytes());//github登录统一123456为密码
+        lUser.setPassword(password);
+        return lUserMapper.insert(lUser);
     }
 
     @Override

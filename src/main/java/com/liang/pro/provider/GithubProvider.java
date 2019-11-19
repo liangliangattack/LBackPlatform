@@ -53,6 +53,8 @@ public class GithubProvider {
 
         try {
             Response response = client.newCall(request).execute();
+            log.error("成功获取github user信息");
+            log.error(response+"");
             String str = response.body().string();
             GithubUser githubUser = JSON.parseObject(str, GithubUser.class);
             return githubUser;
