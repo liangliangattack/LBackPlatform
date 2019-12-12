@@ -29,24 +29,10 @@ mybatis:
   # 驼峰
   map-underscore-to-camel-case: true
 
-    # 启用shutdown
-    # 公开所有的端点
-    # post 请求http://47.101.217.178:8801/killYou/shutdown springboot项目就会停止
-   # http://localhost:8801/killYou/shutdown springboot
-management:
-  endpoint:
-    shutdown:
-      enabled: true
-  endpoints:
-    web:
-      exposure:
-        include: shutdown,info,health
-      base-path: /killYou
 # 打印自动配置报告
 # debug: true
 # 设置打印出来的日志的过滤级别
 logging:
   level.com.liang.pro: trace
-  file: log/pro.log
 #  file: D:/pro.log
 

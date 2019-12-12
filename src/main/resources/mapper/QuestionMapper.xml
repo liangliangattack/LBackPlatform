@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liang.pro.mapper.QuestionMapper">
+  <resultMap id="BaseResultMap" type="com.liang.pro.entity.Question">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="creator" jdbcType="INTEGER" property="creator" />
+    <result column="comment_count" jdbcType="INTEGER" property="commentCount" />
+    <result column="view_count" jdbcType="INTEGER" property="viewCount" />
+    <result column="star_count" jdbcType="INTEGER" property="starCount" />
+    <result column="tag" jdbcType="VARCHAR" property="tag" />
+    <result column="content" jdbcType="LONGVARCHAR" property="content" />
+  </resultMap>
+
+    <insert id="addQuestion">
+      insert into question
+      <trim prefix="(" suffix=")" suffixOverrides=",">
+         title,
+         create_time,
+         creator,
+        <if test="questionDto.tag != null">
+         tag,
+        </if>
+         content,
+      </trim>
+      <trim prefix="value(" suffix=")" suffixOverrides=",">
+         #{questionDto.title},
+         #{questionDto.createTime},
+         #{questionDto.creator},
+        <if test="questionDto.tag != null">
+         #{questionDto.tag},
+        </if>
+         #{questionDto.content},
+      </trim>
+    </insert>
+</mapper>

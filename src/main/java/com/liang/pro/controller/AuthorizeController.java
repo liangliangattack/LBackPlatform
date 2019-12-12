@@ -68,9 +68,7 @@ public class AuthorizeController {
      * @return
      */
     @RequestMapping(value = "/callback")
-    public String callback(@RequestParam("code") String code ,
-                           HttpServletRequest request,
-                           HttpServletResponse response){
+    public String callback(@RequestParam("code") String code , HttpServletRequest request, HttpServletResponse response){
         AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
         accessTokenDTO.setClient_id("0e5beec3e6398c0c0ad6");
         accessTokenDTO.setClient_secret("4d957f24bf8b55f4e95ec6209942b09d30d45766");
