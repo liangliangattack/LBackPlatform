@@ -39,7 +39,7 @@ public class AuthorizeController {
     private TokenService tokenService;
 
     @UserLoginToken
-    @GetMapping("/getMessage")
+    @PostMapping("/getMessage")
     @ResponseBody
     public String getMessage(HttpServletResponse response){
         return "你已通过验证";
@@ -50,10 +50,11 @@ public class AuthorizeController {
      * @param response
      * @return
      */
-    @GetMapping("/error401")
+    @PostMapping("/error401")
     @ResponseBody
     public String error401(HttpServletResponse response){
         response.setStatus(401);
+        System.out.println("返回 401");
         return "401 了解一下";
     }
 
@@ -79,12 +80,13 @@ public class AuthorizeController {
         GithubUser githubUser = githubProvider.getUser(access_token);
         if(githubUser != null){
             LUser lUser = new LUser();
-            String token = UUID.randomUUID().toString();
+            String token = UUID.randomUUID().toString();//uuid生成token
             lUser.setToken(token);
             lUser.setName(githubUser.getLogin());
             lUser.setAccountId(String.valueOf(githubUser.getId()));
+            lUser.setAvatarUrl(githubUser.getAvatarUrl());
             lUser.setCreateTime(System.currentTimeMillis());
-
+            lUser.setPassword("123456");//github登录统一123456为密码
             //拿到用户之后 走登录或者注册流程
             UserDto userDto = new UserDto();
             userDto.setUserName(lUser.getAccountId());
@@ -97,9 +99,9 @@ public class AuthorizeController {
 
             request.getSession().setAttribute("user",githubUser);
 //            response.addCookie(new Cookie("token",token));
-            return "redirect:http://localhost:8080";
+            return "redirect:http://localhost:8080/index";
         }
-        return "redirect:http://localhost:8080";
+        return "redirect:http://localhost:8080/index";
     }
 
     @RequestMapping(value = "/login")
@@ -108,11 +110,13 @@ public class AuthorizeController {
         LUser user = lUserService.login(userDto);//user是否存在
         if(user != null){
             String password = DigestUtils.md5DigestAsHex(userDto.getPassword().getBytes());//md5
+            log.error(password+"");
             if (password.equals(user.getPassword())) {
                 return BaseResult.loginOk(user,tokenService.getToken(user));//token -jwt 生成token
             }
+            log.trace("账户或密码错误");
         }
-        return BaseResult.notOk(Lists.newArrayList(new BaseResult.Error("login","登录失败")));
+        return BaseResult.notOk(Lists.newArrayList(new BaseResult.Error("login","登录失败,账户或密码错误")));
     }
 
     @RequestMapping(value = "/register")
@@ -123,7 +127,7 @@ public class AuthorizeController {
             return BaseResult.notOk(Lists.newArrayList(new BaseResult.Error("register","注册失败,账户已存在")));
         }
         LUser user = new LUser(null,userDto.getUserName(),userDto.getPassword(),userDto.getUserName(),UUID.randomUUID().toString(),
-                System.currentTimeMillis(),null);
+                userDto.getAvatarUrl(),System.currentTimeMillis(),null);
         if(lUserService.addUser(user) == 1){
             return BaseResult.ok(userDto.getUserName()+"->注册成功");
         }

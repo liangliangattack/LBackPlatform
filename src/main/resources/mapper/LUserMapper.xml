@@ -10,11 +10,12 @@
     <result column="password" jdbcType="VARCHAR" property="password" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="token" jdbcType="CHAR" property="token" />
+    <result column="avatar_url" jdbcType="CHAR" property="avatarUrl" />
     <result column="create_time" jdbcType="BIGINT" property="createTime" />
     <result column="modified_time" jdbcType="BIGINT" property="modifiedTime" />
   </resultMap>
     <select id="findUserByAccountId" resultMap="BaseResultMap">
-      select id,account_id,password,name,token,create_time,modified_time
+      select id,account_id,password,name,token,avatar_url,create_time,modified_time
       FROM l_user lu
       where lu.account_id = #{accountId}
     </select>

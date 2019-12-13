@@ -20,7 +20,7 @@ public class LUserServiceImpl implements LUserService {
 
     @Override
     public int addUser(LUser lUser) {
-        String password = DigestUtils.md5DigestAsHex("123456".getBytes());//github登录统一123456为密码
+        String password = DigestUtils.md5DigestAsHex(lUser.getPassword().getBytes());
         lUser.setPassword(password);
         return lUserMapper.insert(lUser);
     }

@@ -24,6 +24,8 @@ public class LUser {
 
     private String token;
 
+    private String avatarUrl;
+
     /**
      * 创建time
      */

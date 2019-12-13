@@ -1,6 +1,5 @@
 package com.liang.pro.controller;
 
-import com.liang.pro.annotation.PassToken;
 import com.liang.pro.annotation.UserLoginToken;
 import com.liang.pro.dto.QuestionDto;
 import com.liang.pro.entity.BaseResult;

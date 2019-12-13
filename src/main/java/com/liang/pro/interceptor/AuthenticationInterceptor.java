@@ -49,6 +49,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             if (userLoginToken.required()) {
                 // 执行认证
                 if (token == null) {
+                    System.out.println("token is null -----------------------");
                     //为啥不能直接 丢错？
 //                    throw new HttpResponseException(HttpStatusCode.Unauthorized);
                     //需要前台拦截 401 请求要求用户登录 浏览器的确显示 401 但是前段 catch error的时候catch不到。。
