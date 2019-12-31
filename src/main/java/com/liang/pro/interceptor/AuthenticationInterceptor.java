@@ -54,7 +54,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 //                    throw new HttpResponseException(HttpStatusCode.Unauthorized);
                     //需要前台拦截 401 请求要求用户登录 浏览器的确显示 401 但是前段 catch error的时候catch不到。。
 //                    httpServletResponse.setStatus(401);
-                    //重定向
+                    //z转发、重定向
                     httpServletRequest.getRequestDispatcher("/author/error401").forward(httpServletRequest,httpServletResponse);
 
                     return false;
